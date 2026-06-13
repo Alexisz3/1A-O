@@ -1,0 +1,129 @@
+.app {
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  transition: opacity 0.4s ease;
+}
+
+.app--transitioning {
+  opacity: 0;
+}
+
+/* ======================================
+   BACKGROUND SYSTEM
+====================================== */
+.app__bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.app__bg-layer {
+  position: absolute;
+  inset: -15px; /* Expand slightly to hide blur edges */
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  opacity: 0;
+  filter: blur(2.5px) brightness(0.9); /* Efecto de ensueño más suave para que se vea la foto */
+  transform: translateX(4%) scale(1.05); /* Animación tipo 'pasar página' suave */
+  transition: opacity 1.2s ease-in-out, transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.app__bg-layer--active {
+  opacity: 1;
+  transform: translateX(0) scale(1.02);
+  z-index: 1;
+}
+
+.app__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--dynamic-overlay, rgba(0, 0, 0, 0.6));
+  transition: background 1.5s ease-in-out;
+}
+
+/* All content sits above the fixed background */
+.app > *:not(.app__bg):not(.bg-nav) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ======================================
+   BACKGROUND NAVIGATION (POETIC)
+====================================== */
+.bg-nav {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: flex;
+  pointer-events: none;
+}
+
+.bg-nav__btn {
+  pointer-events: auto;
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.bg-nav__btn:hover {
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.bg-nav__btn:active {
+  transform: scale(0.95);
+}
+
+/* ======================================
+   CINEMATIC EFFECTS
+====================================== */
+.cinematic-blur {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9997;
+  /* El desenfoque es intenso arriba y abajo, pero transparente en el centro */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 15%, transparent 85%, black 100%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 15%, transparent 85%, black 100%);
+}
+
+.cinematic-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  /* Un sombreado suave alrededor de toda la pantalla */
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.7);
+}
+
+.cinematic-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.05;
+  /* Un pequeño ruido tipo película fotográfica */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}

@@ -1,0 +1,361 @@
+.audio-poem {
+  padding: 5rem 1.5rem 7rem;
+  background: transparent;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.audio-poem--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.audio-poem__inner {
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* Header */
+.audio-poem__header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.audio-poem__label {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.6);
+}
+
+.audio-poem__title {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: clamp(1.8rem, 7vw, 2.5rem);
+  font-weight: 300;
+  color: #f5ede0;
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+
+.audio-poem__author {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.8rem;
+  font-style: italic;
+  letter-spacing: 0.15em;
+  color: rgba(212, 175, 55, 0.5);
+  margin: -0.3rem 0 0;
+}
+
+.audio-poem__divider {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  max-width: 180px;
+  margin-top: 0.25rem;
+}
+
+.audio-poem__divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+}
+
+.audio-poem__divider-ornament {
+  color: rgba(212, 175, 55, 0.5);
+  font-size: 0.55rem;
+}
+
+/* ======================================
+   AUDIO PLAYER
+====================================== */
+.audio-player {
+  background: transparent;
+  border: none;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+/* Error */
+.audio-player__error {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(245, 237, 224, 0.45);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.audio-player__error code {
+  font-family: monospace;
+  color: rgba(212, 175, 55, 0.6);
+}
+
+/* Visualizador de ondas */
+.audio-player__visualizer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 30px;
+  padding: 0 0.5rem;
+}
+
+.audio-player__bar {
+  width: 2px;
+  height: 4px;
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.audio-player__bar--active {
+  background: rgba(212, 175, 55, 0.7);
+  animation: waveBar 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes waveBar {
+  from { height: 4px; }
+  to { height: 22px; }
+}
+
+/* Controles */
+.audio-player__controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.audio-player__btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: transparent;
+  color: rgba(245, 237, 224, 0.85);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.audio-player__btn:hover {
+  border-color: rgba(212, 175, 55, 0.8);
+  background: rgba(212, 175, 55, 0.08);
+  color: #f5ede0;
+}
+
+.audio-player__btn:active {
+  transform: scale(0.92);
+}
+
+.audio-player__progress-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.audio-player__progress-bar {
+  position: relative;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 6px 0;
+  margin: -6px 0;
+}
+
+.audio-player__progress-fill {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.6), rgba(212, 175, 55, 0.9));
+  border-radius: 2px;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+.audio-player__progress-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: rgba(212, 175, 55, 0.85);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: left 0.1s linear;
+}
+
+.audio-player__times {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.7rem;
+  color: rgba(245, 237, 224, 0.35);
+  letter-spacing: 0.05em;
+}
+
+.audio-player__hint {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: rgba(245, 237, 224, 0.35);
+  text-align: center;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+/* ======================================
+   POEM TRANSLATION
+====================================== */
+.poem-translation {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.poem-translation--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.poem-translation__intro {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.5);
+  text-align: center;
+  margin: 0 0 2.5rem;
+}
+
+.poem-translation__scroll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 2rem 0; /* Un poco de respiro al inicio y final */
+}
+
+.poem-translation__scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.poem-translation__lyric-group {
+  margin: 25px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.poem-translation__lyric {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.15); /* Muy atenuado por defecto (futuro) */
+  filter: blur(2px);
+  margin: 0;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0 1rem;
+  transform-origin: center center;
+}
+
+.poem-translation__subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  font-style: normal;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.1); /* Casi invisible (futuro) */
+  filter: blur(2px);
+  margin: 0;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0 1rem;
+}
+
+.poem-translation__lyric-group:hover .poem-translation__lyric {
+  color: rgba(255, 255, 255, 0.9);
+}
+.poem-translation__lyric-group:hover .poem-translation__subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.poem-translation__lyric--active {
+  color: #ffffff; /* Blanco brillante para la línea activa */
+  filter: blur(0);
+  transform: scale(1.05); /* Zoom elegante */
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.poem-translation__subtitle--active {
+  color: #ffffff;
+  filter: blur(0);
+  transform: scale(1.02);
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.poem-translation__lyric--past {
+  color: rgba(255, 255, 255, 0.25);
+  filter: blur(1px);
+}
+.poem-translation__subtitle--past {
+  color: rgba(255, 255, 255, 0.15);
+  filter: blur(1px);
+}
+
+/* Review Mode */
+.poem-translation--review .poem-translation__scroll-container {
+  /* Se elimina max-height y overflow para que el poema se quede de su tamaño original al terminar */
+}
+
+.poem-translation--review .poem-translation__lyric {
+  color: rgba(245, 237, 224, 0.95) !important;
+  filter: blur(0) !important;
+  transform: scale(1) !important;
+  text-shadow: none !important;
+}
+
+.poem-translation--review .poem-translation__subtitle {
+  color: rgba(245, 237, 224, 0.75) !important;
+  filter: blur(0) !important;
+  transform: scale(1) !important;
+  text-shadow: none !important;
+}
+
+/* Atribución */
+.poem-translation__attribution {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.8rem;
+  font-style: normal;
+  letter-spacing: 0.15em;
+  color: rgba(212, 175, 55, 0.6);
+  text-align: center;
+  margin: 1.5rem 0 0;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.poem-translation--visible .poem-translation__attribution {
+  opacity: 1;
+  transform: translateY(0);
+}

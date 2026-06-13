@@ -1,0 +1,101 @@
+/* ============================================================
+   GLOBAL STYLES — Aniversario App
+   Paleta: Vino suave, marfil, dorado tenue, negro cálido
+============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* Reset y base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  background-color: #0d0806;
+  color: #f5ede0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scrollbar elegante */
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0806;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.25);
+  border-radius: 2px;
+}
+
+/* Selección de texto */
+::selection {
+  background: rgba(212, 175, 55, 0.2);
+  color: #f5ede0;
+}
+
+/* Imágenes responsive */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Botones base */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Focus visible accesible */
+:focus-visible {
+  outline: 1px solid rgba(212, 175, 55, 0.5);
+  outline-offset: 3px;
+}
+
+/* Variables CSS */
+:root {
+  --color-bg: #0d0806;
+  --color-bg-warm: #140b0b;
+  --color-gold: #d4af37;
+  --color-gold-muted: rgba(212, 175, 55, 0.6);
+  --color-ivory: #f5ede0;
+  --color-ivory-muted: rgba(245, 237, 224, 0.65);
+  --color-wine: #3d1a1a;
+  --color-text: rgba(245, 237, 224, 0.75);
+
+  --font-display: 'Lora', 'Playfair Display', 'Georgia', serif;
+  --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+
+  --transition-slow: 0.9s ease;
+  --transition-medium: 0.5s ease;
+}
+
+/* Elimina el flash azul al tocar en móvil */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Respeta preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

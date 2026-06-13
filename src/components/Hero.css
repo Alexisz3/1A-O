@@ -1,0 +1,265 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  overflow: hidden;
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+
+/* Grano cinematográfico con SVG noise */
+.hero__grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 1;
+  animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -3%); }
+  20% { transform: translate(3%, 2%); }
+  30% { transform: translate(-1%, 4%); }
+  40% { transform: translate(4%, -1%); }
+  50% { transform: translate(-3%, 1%); }
+  60% { transform: translate(2%, -4%); }
+  70% { transform: translate(-4%, 3%); }
+  80% { transform: translate(1%, -2%); }
+  90% { transform: translate(-2%, 4%); }
+}
+
+/* Viñeta cinematográfica */
+.hero__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.75) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 1.5rem;
+  max-width: 800px;
+  width: 100%;
+  animation: letterOpen 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes letterOpen {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Ornamento */
+.hero__ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 220px;
+}
+
+.hero__ornament--bottom {
+  justify-content: center;
+}
+
+.hero__ornament-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+}
+
+.hero__ornament-diamond {
+  color: rgba(212, 175, 55, 0.7);
+  font-size: 0.6rem;
+  letter-spacing: 0;
+}
+
+/* Label */
+.hero__label {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.7);
+  margin: 0;
+}
+
+/* Título principal */
+.hero__title {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: clamp(2.6rem, 10vw, 4rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: #f5ede0;
+  margin: 0;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 40px rgba(0,0,0,0.5);
+}
+
+/* Date */
+.hero__date {
+  font-family: var(--font-body);
+  font-size: clamp(0.65rem, 2.5vw, 0.75rem);
+  letter-spacing: 0.15em;
+  color: rgba(245, 237, 224, 0.4);
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+/* Subtítulo */
+.hero__subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.95rem, 3.5vw, 1.15rem);
+  font-weight: 400;
+  font-style: italic;
+  color: rgba(245, 237, 224, 0.65);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 300px;
+}
+
+/* Botón principal — pill suave con micro-animaciones */
+.hero__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding: 0.9rem 2.4rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 100px;
+  color: rgba(245, 237, 224, 0.95);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.hero__button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255,255,255,0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.hero__button:hover::before,
+.hero__button:active::before {
+  opacity: 1;
+}
+
+.hero__button:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 0 20px rgba(212,175,55,0.12);
+}
+
+.hero__button:active {
+  transform: scale(0.97) translateY(0);
+}
+
+.hero__button--started {
+  opacity: 0.55;
+  cursor: default;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.hero__button-icon {
+  display: flex;
+  align-items: center;
+  opacity: 0.85;
+  animation: iconPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* Hint */
+.hero__hint {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245, 237, 224, 0.3);
+  margin: 0.5rem 0 0;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+/* Indicador de scroll */
+.hero__scroll-indicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+.hero__scroll-arrow {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(212, 175, 55, 0.6), transparent);
+  position: relative;
+}
+
+.hero__scroll-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid rgba(212, 175, 55, 0.5);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.5);
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+  50% { transform: translateX(-50%) translateY(8px); opacity: 1; }
+}

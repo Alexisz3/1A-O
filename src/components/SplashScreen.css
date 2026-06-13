@@ -1,0 +1,36 @@
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  background-color: #050505;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1s ease-in-out;
+}
+
+.splash-screen--fading-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.splash-screen__content {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+}
+
+.splash-screen__content--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.splash-screen__text {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  font-style: italic;
+  color: #f5ede0;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}

@@ -1,0 +1,93 @@
+.particles-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2; /* Sobre el fondo, debajo del contenido */
+}
+
+.particle {
+  position: absolute;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ==================
+   NOCHE (Luciérnagas)
+   ================== */
+.particles--noche .particle {
+  width: var(--size);
+  height: var(--size);
+  left: var(--left);
+  top: var(--top);
+  background: radial-gradient(circle, rgba(255,235,150,1) 0%, rgba(212,175,55,0.4) 40%, rgba(0,0,0,0) 70%);
+  border-radius: 50%;
+  animation: firefly var(--duration) ease-in-out infinite var(--delay);
+}
+
+@keyframes firefly {
+  0% { transform: translate(0, 0) scale(0.8); opacity: 0; }
+  50% { transform: translate(var(--x-drift), var(--y-drift)) scale(1.2); opacity: var(--opacity); }
+  100% { transform: translate(calc(var(--x-drift) * 1.5), calc(var(--y-drift) * 1.5)) scale(0.8); opacity: 0; }
+}
+
+/* ==================
+   BOSQUE (Pétalos)
+   ================== */
+.particles--bosque .particle {
+  width: var(--size);
+  height: calc(var(--size) * 0.8);
+  left: var(--left);
+  top: -10%;
+  background: rgba(255, 183, 197, 0.7); /* Rosa sakura */
+  border-radius: 100% 0 100% 0; /* Forma de pétalo */
+  box-shadow: 0 0 4px rgba(255, 183, 197, 0.4);
+  animation: fallPetal var(--duration) linear infinite var(--delay);
+}
+
+@keyframes fallPetal {
+  0% { transform: translate(0, 0) rotate(var(--rotation)); opacity: 0; }
+  10% { opacity: var(--opacity); }
+  90% { opacity: var(--opacity); }
+  100% { transform: translate(100px, 110vh) rotate(calc(var(--rotation) + 360deg)); opacity: 0; }
+}
+
+/* ==================
+   MAR (Burbujas/Polvo)
+   ================== */
+.particles--mar .particle {
+  width: calc(var(--size) * 0.5);
+  height: calc(var(--size) * 0.5);
+  left: var(--left);
+  bottom: -5%;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+  animation: floatBubble var(--duration) ease-in infinite var(--delay);
+}
+
+@keyframes floatBubble {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  20% { opacity: var(--opacity); }
+  80% { opacity: var(--opacity); }
+  100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+}
+
+/* ==================
+   LLUVIA (Gotas)
+   ================== */
+.particles--lluvia .particle {
+  width: 1.5px;
+  height: var(--size);
+  left: var(--left);
+  top: -5%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.4));
+  animation: rainDrop var(--duration) linear infinite var(--delay);
+}
+
+@keyframes rainDrop {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: var(--opacity); }
+  80% { opacity: var(--opacity); }
+  100% { transform: translateY(105vh); opacity: 0; }
+}

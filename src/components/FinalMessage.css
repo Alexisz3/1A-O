@@ -1,0 +1,252 @@
+.final-message {
+  background: transparent;
+  padding: 5rem 1.5rem 8rem;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.final-message--visible {
+  opacity: 1;
+}
+
+.final-message__inner {
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+}
+
+/* Ornamento superior */
+.final-message__top-ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 200px;
+}
+
+.final-message__ornament-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.35), transparent);
+}
+
+.final-message__ornament-symbol {
+  color: rgba(212, 175, 55, 0.45);
+  font-size: 0.55rem;
+}
+
+/* Label */
+.final-message__label {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.55);
+}
+
+/* Carta / Card */
+.final-message__card {
+  position: relative;
+  padding: 2.5rem 1.8rem;
+  background: rgba(255, 255, 255, 0.018);
+  border-left: 1px solid rgba(212, 175, 55, 0.15);
+  border-right: 1px solid rgba(212, 175, 55, 0.15);
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.final-message__card--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Comilla decorativa */
+.final-message__quote {
+  position: absolute;
+  top: -1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: rgba(212, 175, 55, 0.12);
+  pointer-events: none;
+  user-select: none;
+}
+
+.final-message__text {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 4vw, 1.15rem);
+  line-height: 1.9;
+  color: rgba(245, 237, 224, 0.78);
+  margin: 0;
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+/* Firma */
+.final-message__signature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 1s ease 0.4s, transform 1s ease 0.4s;
+}
+
+.final-message__signature--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.final-message__signature-line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+}
+
+.final-message__signature-text {
+  font-family: 'Lora', 'Playfair Display', 'Georgia', serif;
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(212, 175, 55, 0.75);
+  margin: 0;
+  letter-spacing: 0.08em;
+}
+
+.final-message__signature-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.2rem;
+}
+
+.final-message__audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.final-message__audio-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: transparent;
+  color: rgba(245, 237, 224, 0.85);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.final-message__audio-btn:hover,
+.final-message__audio-btn.active {
+  border-color: rgba(212, 175, 55, 0.8);
+  background: rgba(212, 175, 55, 0.08);
+  color: #f5ede0;
+}
+
+.final-message__audio-btn:active {
+  transform: scale(0.92);
+}
+
+/* Cierre final */
+.final-message__closing {
+  margin-top: 0.5rem;
+  padding: 15px; /* Área tocable más grande (mínimo 44px) */
+  touch-action: none; /* Evita que el navegador interrumpa el gesto (zoom, scroll) */
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+
+.final-message__closing:focus-visible .final-message__closing-diamond {
+  color: #f5ede0;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.final-message__closing-diamond {
+  font-size: 0.8rem;
+  color: rgba(212, 175, 55, 0.4);
+  transition: all 0.4s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+}
+
+.final-message__closing-diamond.pressing {
+  color: rgba(245, 237, 224, 0.8);
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+  transform: scale(1.1);
+  animation: breathe-fast 0.6s infinite alternate;
+}
+
+.final-message__closing-diamond.glow {
+  color: #f5ede0;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+  transform: scale(1.5);
+}
+
+@keyframes breathe-fast {
+  from { opacity: 0.8; transform: scale(1.1); }
+  to { opacity: 1; transform: scale(1.3); }
+}
+
+/* Secret Message Easter Egg */
+.final-message__secret {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(245, 237, 224, 0.8);
+  text-align: center;
+  margin-top: 2rem;
+  font-style: italic;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 1.5s ease;
+  pointer-events: none;
+}
+
+.final-message__secret--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.3); }
+}
+
+.final-message__text p {
+  margin: 0 0 1.2rem;
+}
+
+.final-message__text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Promise */
+.final-message__promise {
+  font-family: 'Lora', serif;
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  font-style: italic;
+  color: #f5ede0;
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: 0.03em;
+}
