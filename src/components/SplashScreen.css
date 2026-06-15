@@ -1,12 +1,13 @@
 .splash-screen {
   position: fixed;
   inset: 0;
-  background-color: #050505;
-  z-index: 99999;
+  background: radial-gradient(ellipse at center, #0d0d0d 0%, #050505 100%);
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: opacity 1s ease-in-out;
+  overflow: hidden;
 }
 
 .splash-screen--fading-out {
@@ -14,23 +15,175 @@
   pointer-events: none;
 }
 
-.splash-screen__content {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+/* ============================================================
+   Partículas doradas flotantes
+   ============================================================ */
+.splash-screen__particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
-.splash-screen__content--visible {
+.splash-screen__particle {
+  position: absolute;
+  bottom: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.9), rgba(212, 175, 55, 0));
+  animation: float-up linear infinite;
+  filter: blur(0.5px);
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--particle-opacity, 0.3);
+  }
+  90% {
+    opacity: var(--particle-opacity, 0.3);
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   Contenido central
+   ============================================================ */
+.splash-screen__content {
+  position: relative;
+  z-index: 2;
   opacity: 1;
-  transform: translateY(0);
+  transition: opacity 1s ease-in-out;
+}
+
+.splash-screen__text {
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+}
+
+.splash-screen__content--visible .splash-screen__text {
+  opacity: 1;
 }
 
 .splash-screen__text {
   font-family: 'Lora', 'Georgia', serif;
-  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  font-size: clamp(1.2rem, 4vw, 2rem);
   font-style: italic;
   color: #f5ede0;
-  letter-spacing: 0.05em;
+  letter-spacing: 2px;
   text-align: center;
+  padding: 0 2rem;
   text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+/* ============================================================
+   Invitación elegante (pantalla inicial)
+   ============================================================ */
+.splash-screen__invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  animation: fade-in-up 1.2s ease-out;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.splash-screen__ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 160px;
+}
+
+.splash-screen__ornament-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+}
+
+.splash-screen__ornament-diamond {
+  font-size: 0.5rem;
+  color: rgba(212, 175, 55, 0.5);
+}
+
+.splash-screen__subtitle {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: clamp(0.8rem, 3vw, 0.95rem);
+  font-style: italic;
+  color: rgba(245, 237, 224, 0.5);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.splash-screen__start-btn {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: clamp(1rem, 3.5vw, 1.15rem);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 2px;
+  color: #f5ede0;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  padding: 1.2rem 3rem;
+  border-radius: 60px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  animation: pulse-glow 2.5s ease-in-out infinite alternate;
+  position: relative;
+  overflow: hidden;
+}
+
+.splash-screen__start-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 60px;
+  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.06), transparent 70%);
+  pointer-events: none;
+}
+
+.splash-screen__start-btn:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: rgba(212, 175, 55, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 30px rgba(212, 175, 55, 0.15);
+}
+
+.splash-screen__start-btn:active {
+  transform: scale(0.97);
+}
+
+.splash-screen__hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(245, 237, 224, 0.25);
+  margin: 0;
+  animation: breathe-hint 2s ease-in-out infinite alternate;
+}
+
+@keyframes breathe-hint {
+  from { opacity: 0.3; }
+  to { opacity: 0.7; }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 8px rgba(212, 175, 55, 0.05); }
+  100% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.15), 0 0 60px rgba(212, 175, 55, 0.05); }
 }

@@ -131,39 +131,70 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  margin-top: 0.2rem;
 }
 
-.final-message__audio-controls {
+/* ============================================================
+   Sección Bíblica (separada del mensaje final)
+   ============================================================ */
+.bible-section {
+  padding: 4rem 1.5rem 6rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.bible-section--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bible-section__inner {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.bible-section__ornament {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 1rem;
+  width: 100%;
+  max-width: 240px;
 }
 
-.final-message__audio-btn {
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  background: transparent;
+.bible-section__ornament-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+}
+
+.bible-section__ornament-icon {
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.3));
+}
+
+.bible-section__quote {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: clamp(1rem, 3.5vw, 1.15rem);
+  font-style: italic;
+  line-height: 1.8;
   color: rgba(245, 237, 224, 0.85);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
+  margin: 0;
+  padding: 0 0.5rem;
 }
 
-.final-message__audio-btn:hover,
-.final-message__audio-btn.active {
-  border-color: rgba(212, 175, 55, 0.8);
-  background: rgba(212, 175, 55, 0.08);
-  color: #f5ede0;
-}
-
-.final-message__audio-btn:active {
-  transform: scale(0.92);
+.bible-section__reference {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgba(212, 175, 55, 0.7);
+  text-transform: uppercase;
+  margin: 0;
 }
 
 /* Cierre final */
@@ -249,4 +280,59 @@
   text-align: center;
   margin-bottom: 2rem;
   letter-spacing: 0.03em;
+}
+
+/* Botón de revelación (Sello) */
+.final-message__reveal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  animation: fade-in 1s ease forwards;
+}
+
+.final-message__reveal-btn {
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: rgba(212, 175, 55, 0.8);
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.final-message__reveal-btn:hover,
+.final-message__reveal-btn:focus-visible {
+  border-color: rgba(212, 175, 55, 0.7);
+  color: #f5ede0;
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.final-message__reveal-diamond {
+  font-size: 0.5rem;
+  color: rgba(212, 175, 55, 0.5);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dedicatoria final */
+.final-message__dedication {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(245, 237, 224, 0.5);
+  font-style: italic;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
 }

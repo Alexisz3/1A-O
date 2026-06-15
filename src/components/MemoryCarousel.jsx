@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -36,6 +36,7 @@ function GridImage({ src, alt, onClick }) {
       alt={alt}
       className="memory-carousel__grid-img"
       loading="lazy"
+      decoding="async"
       onError={() => setHasError(true)}
       onClick={onClick}
     />
@@ -48,30 +49,11 @@ export default function MemoryCarousel() {
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [secretRevealed, setSecretRevealed] = useState(false);
   const [focusedPhoto, setFocusedPhoto] = useState(null);
-  const audioRef = useRef(null);
   const { ref, isVisible } = useScrollReveal({ threshold: 0.1 });
 
-  const playAudio = useCallback((src) => {
-    if (!src || !audioRef.current) return;
-    audioRef.current.pause();
-    audioRef.current.src = src;
-    audioRef.current.volume = 0.6;
-    audioRef.current.play().catch(() => {});
-  }, []);
-
-  const stopAudio = useCallback(() => {
-    if (!audioRef.current) return;
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
-  }, []);
-
   const handleSlideChange = useCallback((swiper) => {
-    const idx = swiper.realIndex;
-    setActiveIdx(idx);
-    stopAudio();
-  }, [stopAudio]);
-
-  useEffect(() => () => stopAudio(), [stopAudio]);
+    setActiveIdx(swiper.realIndex);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -106,8 +88,6 @@ export default function MemoryCarousel() {
       ref={ref}
       id="recuerdos"
     >
-      <audio ref={audioRef} preload="none" />
-
       <div className="memory-carousel__header">
         <span className="memory-carousel__label">Nuestro primer año</span>
         <div className="memory-carousel__divider" aria-hidden="true">
@@ -157,7 +137,9 @@ export default function MemoryCarousel() {
                   alt={mem.title}
                   className="memory-carousel__img"
                   onError={() => setImgErrors(prev => ({ ...prev, [idx]: true }))}
-                  loading="lazy"
+                  loading={idx === activeIdx ? 'eager' : 'lazy'}
+                  fetchPriority={idx === activeIdx ? 'high' : 'auto'}
+                  decoding="async"
                 />
               )}
               <div className="memory-carousel__card-overlay" aria-hidden="true" />
@@ -209,6 +191,7 @@ export default function MemoryCarousel() {
                   src={monthlyMemories[selectedMemory].cover} 
                   alt={monthlyMemories[selectedMemory].title} 
                   className="memory-carousel__modal-img memory-carousel__modal-img--cover" 
+                  decoding="async"
                 />
               )}
             </div>
@@ -259,7 +242,7 @@ export default function MemoryCarousel() {
       {focusedPhoto && (
         <div className="memory-carousel__focused" onClick={() => setFocusedPhoto(null)}>
           <div className="memory-carousel__focused-content" onClick={e => e.stopPropagation()}>
-            <img src={focusedPhoto} alt="Enfocado" className="memory-carousel__focused-img" />
+            <img src={focusedPhoto} alt="Enfocado" className="memory-carousel__focused-img" decoding="async" />
             <button className="memory-carousel__focused-btn" onClick={() => setFocusedPhoto(null)}>
               Volver al mes
             </button>

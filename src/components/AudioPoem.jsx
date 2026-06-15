@@ -3,7 +3,7 @@ import { synchronizedLyrics, poemSectionTitle, poemAttribution } from '../consta
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import './AudioPoem.css';
 
-const AudioPoem = forwardRef(function AudioPoem(_, ref) {
+const AudioPoem = forwardRef(function AudioPoem({ onPlayStateChange }, ref) {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -62,13 +62,18 @@ const AudioPoem = forwardRef(function AudioPoem(_, ref) {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const onPlay = () => setIsPlaying(true);
+    const onPlay = () => {
+      setIsPlaying(true);
+      if (onPlayStateChange) onPlayStateChange(true);
+    };
     const onPause = () => {
       setIsPlaying(false);
+      if (onPlayStateChange) onPlayStateChange(false);
       cancelAnimationFrame(animationRef.current);
     };
     const onEnded = () => {
       setIsPlaying(false);
+      if (onPlayStateChange) onPlayStateChange(false);
       setProgress(0);
       // No reseteamos el activeLyric para evitar que haga auto-scroll hacia arriba o abajo
       setReviewMode(true);
@@ -127,7 +132,7 @@ const AudioPoem = forwardRef(function AudioPoem(_, ref) {
       audio.removeEventListener('loadedmetadata', onLoadedMetadata);
       audio.removeEventListener('error', onError);
     };
-  }, []);
+  }, [onPlayStateChange]);
 
   // DEV Mode Keyboard Shortcut for Calibration
   useEffect(() => {
@@ -232,9 +237,7 @@ const AudioPoem = forwardRef(function AudioPoem(_, ref) {
                   </div>
                   <div className="audio-player__times">
                     {/* Modo calibración: Muestra el tiempo exacto con decimales */}
-                    <span style={{ color: '#d4af37', fontWeight: 'bold' }}>
-                      {(audioRef.current?.currentTime ?? 0).toFixed(2)}s
-                    </span>
+                    <span>{formatTime(progress * duration)}</span>
                     <span>{formatTime(duration)}</span>
                   </div>
                 </div>

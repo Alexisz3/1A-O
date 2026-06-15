@@ -35,7 +35,7 @@ export const synchronizedLyrics = [
     { time: 29.30, text: "Mi rendi una persona migliore", translation: "Me haces una persona mejor" },
     { time: 30.90, text: "e per questo ti sono grato.", translation: "y por eso te estoy agradecido." },
     { time: 32.70, text: "Perché se amare è un errore,", translation: "Porque si amar es un error," },
-    { time: 34.60, text: "allora che il mondo mi giudichi pure,", translation: "entonces que el mondo me juzgue," },
+    { time: 34.60, text: "allora che il mondo mi giudichi pure,", translation: "entonces que el mundo me juzgue," },
     { time: 36.70, text: 'e che io bruci per l\'eternità."', translation: 'y que yo arda por la eternidad."' }
 ];
 // ============================================================
@@ -79,7 +79,9 @@ export const monthlyMemories = [
             '/images/months-opt/julio2025/1.jpg',
             '/images/months-opt/julio2025/2.jpg',
             '/images/months-opt/julio2025/3.jpg',
-            '/images/months-opt/julio2025/4.jpg'
+            '/images/months-opt/julio2025/4.jpg',
+            '/images/months-opt/julio2025/5.jpg',
+            '/images/months-opt/julio2025/6.jpg'
         ]
     },
     {
@@ -94,7 +96,6 @@ export const monthlyMemories = [
             '/images/months-opt/agosto2025/2.jpg',
             '/images/months-opt/agosto2025/3.jpg',
             '/images/months-opt/agosto2025/4.jpg',
-            '/images/months-opt/agosto2025/5.jpg',
             '/images/months-opt/agosto2025/6.jpg'
         ]
     },
@@ -133,7 +134,7 @@ export const monthlyMemories = [
         range: '14 de Noviembre 2025',
         title: 'Días de frío y calientes',
         cover: '/images/months-opt/noviembre2025/cover.jpg',
-        description: 'Aprendí que en los climas frios siempre encontraras calor en los brazos de tu persona favorita.',
+        description: 'Aprendí que en los climas fríos siempre encontrarás calor en los brazos de tu persona favorita.',
         secret: 'Mi lugar favorito es a tu lado.',
         photos: [
             '/images/months-opt/noviembre2025/1.jpg',
@@ -249,14 +250,18 @@ export const monthlyMemories = [
 // ============================================================
 export const replyMessage = `Eres todo para mí. Te agradezco tanto por estar en mi vida,
 por acompañarme en los momentos difíciles y en los más bonitos,
-estando siempre presente, justo en el instante correcto.
+estando siempre presente, justo en el momento correcto.
 
-Me haces apreciar de verdad cada alegría, cada momento, cada instante y te agradezco porque,
-gracias a ti, hoy tengo a Dios en mi corazón. Él se ha vuelto
-el pilar fundamental que sostiene nuestra relación.
+Me haces apreciar de verdad cada alegría, cada momento, cada instante y te agradezco por ello,
+y porque gracias a ti, hoy tengo a Dios en mi corazón. 
+Él se ha vuelto el pilar fundamental que sostiene nuestra relación.
 
-Sé que nos amamos con toda el alma y que nuestro respeto es inigualable.
-Por eso y por todo lo que viene: Te amo, mi vida.`
+Sé que nos amamos con toda el alma y que el respeto que nos tenemos es hermoso.
+Eres la pieza que me faltaba en la vida para que todo sea perfecto.
+Por eso y por todo lo que viene
+Te quiero...
+Te adoro...
+Te amo por siempre...`
 
 export const finalPromise = 'Prometo cuidar lo nuestro incluso en los días simples.';
 export const finalSignature = 'Con todo mi amor.';
@@ -266,3 +271,14 @@ export const finalSignature = 'Con todo mi amor.';
 // Mantener presionado el ícono final para revelarlo
 // ============================================================
 export const secretMessage = 'P.D. Y si te lo estabas preguntando... sí, sigo igual de enamorado que el primer día.';
+
+export const finalDedication = 'De mí, para mi persona favorita.';
+export const openLetterLabel = 'Abrir mi última carta';
+
+// ============================================================
+// 📖 APARTADO EVANGÉLICO
+// ============================================================
+export const bibleVerse = {
+    quote: "Mejor son dos que uno solo, porque tienen un mayor beneficio por su duro trabajo. Y es que si uno de ellos cae, el otro puede ayudar a su compañero a levantarse",
+    reference: "Eclesiastés 4:9-10"
+};

@@ -1,44 +1,51 @@
+import { useMemo } from 'react';
 import './ParticlesLayer.css';
 
-// types: 'mar', 'bosque', 'noche', 'lluvia'
+function seededRandom(seed) {
+  const value = Math.sin(seed * 12.9898) * 43758.5453;
+  return value - Math.floor(value);
+}
+
+function buildParticle(type, index) {
+  const baseSeed = index + type.length * 101;
+  const style = {
+    '--delay': `${seededRandom(baseSeed + 1) * 5}s`,
+    '--duration': `${seededRandom(baseSeed + 2) * 3 + 3}s`,
+    '--left': `${seededRandom(baseSeed + 3) * 100}%`,
+    '--size': `${seededRandom(baseSeed + 4) * 10 + 4}px`,
+    '--opacity': `${seededRandom(baseSeed + 5) * 0.5 + 0.3}`,
+  };
+
+  if (type === 'bosque') {
+    style['--rotation'] = `${seededRandom(baseSeed + 6) * 360}deg`;
+    style['--duration'] = `${seededRandom(baseSeed + 7) * 5 + 6}s`;
+  } else if (type === 'noche') {
+    style['--duration'] = `${seededRandom(baseSeed + 8) * 4 + 4}s`;
+    style['--top'] = `${seededRandom(baseSeed + 9) * 100}%`;
+    style['--x-drift'] = `${(seededRandom(baseSeed + 10) - 0.5) * 100}px`;
+    style['--y-drift'] = `${(seededRandom(baseSeed + 11) - 0.5) * 100}px`;
+  } else if (type === 'mar') {
+    style['--duration'] = `${seededRandom(baseSeed + 12) * 4 + 6}s`;
+  } else if (type === 'lluvia') {
+    style['--duration'] = `${seededRandom(baseSeed + 13) * 0.5 + 0.5}s`;
+    style['--size'] = `${seededRandom(baseSeed + 14) * 10 + 10}px`;
+  }
+
+  return style;
+}
+
 export default function ParticlesLayer({ type }) {
-  // Número de partículas depende del tipo
   const particleCount = type === 'lluvia' ? 40 : 25;
-  const particles = Array.from({ length: particleCount });
+  const particles = useMemo(
+    () => Array.from({ length: particleCount }, (_, index) => buildParticle(type, index)),
+    [particleCount, type],
+  );
 
   return (
     <div className={`particles-container particles--${type}`} aria-hidden="true">
-      {particles.map((_, i) => {
-        // Valores aleatorios para CSS
-        const style = {
-          '--delay': `${Math.random() * 5}s`,
-          '--duration': `${Math.random() * 3 + 3}s`,
-          '--left': `${Math.random() * 100}%`,
-          '--size': `${Math.random() * 10 + 4}px`, // 4px a 14px
-          '--opacity': `${Math.random() * 0.5 + 0.3}`
-        };
-
-        if (type === 'bosque') {
-          // Pétalos
-          style['--rotation'] = `${Math.random() * 360}deg`;
-          style['--duration'] = `${Math.random() * 5 + 6}s`; // Más lentos
-        } else if (type === 'noche') {
-          // Luciérnagas
-          style['--duration'] = `${Math.random() * 4 + 4}s`;
-          style['--top'] = `${Math.random() * 100}%`;
-          style['--x-drift'] = `${(Math.random() - 0.5) * 100}px`;
-          style['--y-drift'] = `${(Math.random() - 0.5) * 100}px`;
-        } else if (type === 'mar') {
-          // Burbujas
-          style['--duration'] = `${Math.random() * 4 + 6}s`;
-        } else if (type === 'lluvia') {
-          // Lluvia
-          style['--duration'] = `${Math.random() * 0.5 + 0.5}s`;
-          style['--size'] = `${Math.random() * 10 + 10}px`; // largo
-        }
-
-        return <div key={i} className="particle" style={style} />;
-      })}
+      {particles.map((style, index) => (
+        <div key={index} className="particle" style={style} />
+      ))}
     </div>
   );
 }

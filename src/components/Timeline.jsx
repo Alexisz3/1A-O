@@ -24,7 +24,7 @@ export default function Timeline() {
       </div>
 
       <div className="timeline__things">
-        <h3 className="timeline__things-title">5 cosas tuyas que se quedaron conmigo</h3>
+        <h3 className="timeline__things-title">Cosas tuyas que se quedaron conmigo</h3>
         <ul className="timeline__list">
           {topThingsILove.map((thing, index) => (
             <li key={index} className="timeline__item">
