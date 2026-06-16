@@ -44,6 +44,7 @@ export default function App() {
   const audioPoemRef = useRef(null);
   const globalAudioRef = useRef(null);
   const [currentBg, setCurrentBg] = useState(0);
+  const [previousBg, setPreviousBg] = useState(null);
   const [started, setStarted] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [poemPlaying, setPoemPlaying] = useState(false);
@@ -56,11 +57,15 @@ export default function App() {
   useDynamicTheme(BACKGROUNDS[currentBg].src);
 
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
     if (showSplash) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     }
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
   }, [showSplash]);
 
   // Inicializar Web Audio API para controlar volumen real en iOS
@@ -152,8 +157,17 @@ export default function App() {
   }, [started]);
 
   const nextBg = useCallback(() => {
-    setCurrentBg(prev => (prev + 1) % BACKGROUNDS.length);
+    setCurrentBg(prev => {
+      setPreviousBg(prev);
+      return (prev + 1) % BACKGROUNDS.length;
+    });
   }, []);
+
+  useEffect(() => {
+    if (previousBg === null) return undefined;
+    const timeout = window.setTimeout(() => setPreviousBg(null), 1400);
+    return () => window.clearTimeout(timeout);
+  }, [previousBg]);
 
   return (
     <>
@@ -168,6 +182,13 @@ export default function App() {
       >
         {/* Fondos dinámicos pre-cargados para crossfade suave */}
         <div className="app__bg" aria-hidden="true">
+          {previousBg !== null && previousBg !== currentBg && (
+            <div
+              key={BACKGROUNDS[previousBg].id}
+              className="app__bg-layer app__bg-layer--previous"
+              style={{ backgroundImage: `url(${BACKGROUNDS[previousBg].src})` }}
+            />
+          )}
           <div
             key={BACKGROUNDS[currentBg].id}
             className="app__bg-layer app__bg-layer--active"
@@ -185,7 +206,7 @@ export default function App() {
         <div className="cinematic-grain" aria-hidden="true" />
 
         {/* Controles de fondo poéticos */}
-        <div className="bg-nav" aria-hidden="true">
+        <div className="bg-nav">
           <button
             className="bg-nav__btn"
             onClick={nextBg}
@@ -195,12 +216,13 @@ export default function App() {
           </button>
         </div>
 
-        {/* Contenido */}
-        <Hero started={started} onStart={handleStart} />
-        <AudioPoem ref={audioPoemRef} onPlayStateChange={setPoemPlaying} />
-        <Timeline />
-        <MemoryCarousel />
-        <FinalMessage />
+        <div className="app__content">
+          <Hero started={started} onStart={handleStart} />
+          <AudioPoem ref={audioPoemRef} onPlayStateChange={setPoemPlaying} />
+          <Timeline />
+          <MemoryCarousel />
+          <FinalMessage />
+        </div>
       </main>
     </>
   );

@@ -72,6 +72,17 @@ export default function MemoryCarousel() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedMemory, focusedPhoto]);
 
+  // Lock body scroll when modal or focused photo is open
+  useEffect(() => {
+    const isOpen = selectedMemory !== null || focusedPhoto !== null;
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [selectedMemory, focusedPhoto]);
+
   const handleMemoryClick = useCallback((idx) => {
     if (idx === activeIdx) {
       setSelectedMemory(idx);

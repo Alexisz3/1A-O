@@ -103,8 +103,6 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
 }
 
 .memory-carousel__card--interactive:hover .memory-carousel__card-hint {
@@ -136,8 +134,7 @@
 .memory-carousel__placeholder {
   width: 100%;
   height: 100%;
-  background: rgba(26, 13, 13, 0.4);
-  backdrop-filter: blur(10px);
+  background: rgba(26, 13, 13, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;

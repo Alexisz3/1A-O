@@ -201,7 +201,7 @@
 .final-message__closing {
   margin-top: 0.5rem;
   padding: 15px; /* Área tocable más grande (mínimo 44px) */
-  touch-action: none; /* Evita que el navegador interrumpa el gesto (zoom, scroll) */
+  touch-action: manipulation; /* Permite scroll vertical, previene double-tap zoom */
   user-select: none;
   -webkit-user-select: none;
   outline: none;
