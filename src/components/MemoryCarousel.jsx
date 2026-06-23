@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import './MemoryCarousel.css';
 
 import { monthlyMemories } from '../constants/content';
@@ -31,24 +32,55 @@ function GridImage({ src, alt, onClick }) {
   if (hasError) return null; // Oculta elegantemente si falla
 
   return (
-    <img
-      src={src}
-      alt={alt}
-      className="memory-carousel__grid-img"
-      loading="lazy"
-      decoding="async"
-      onError={() => setHasError(true)}
-      onClick={onClick}
-    />
+    <button className="memory-carousel__grid-button" onClick={onClick} aria-label={`Abrir ${alt}`}>
+      <img
+        src={src}
+        alt={alt}
+        className="memory-carousel__grid-img"
+        loading="lazy"
+        decoding="async"
+        onError={() => setHasError(true)}
+      />
+    </button>
   );
 }
 
-export default function MemoryCarousel() {
+function FocusedPhoto({ src, onClose }) {
+  const [status, setStatus] = useState('loading');
+
+  return (
+    <div className="memory-carousel__focused-content" onClick={e => e.stopPropagation()}>
+      {status === 'loading' && (
+        <p className="memory-carousel__focused-status" role="status">Cargando recuerdo…</p>
+      )}
+      {status === 'error' ? (
+        <p className="memory-carousel__focused-status" role="alert">
+          Esta foto no pudo cargarse. El recuerdo sigue aquí.
+        </p>
+      ) : (
+        <img
+          src={src}
+          alt="Recuerdo ampliado"
+          className="memory-carousel__focused-img"
+          decoding="async"
+          onLoad={() => setStatus('loaded')}
+          onError={() => setStatus('error')}
+        />
+      )}
+      <button className="memory-carousel__focused-btn" onClick={onClose}>
+        Volver al mes
+      </button>
+    </div>
+  );
+}
+
+export default function MemoryCarousel({ memories = monthlyMemories }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [imgErrors, setImgErrors] = useState({});
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [secretRevealed, setSecretRevealed] = useState(false);
   const [focusedPhoto, setFocusedPhoto] = useState(null);
+  const focusedOverlayRef = useRef(null);
   const { ref, isVisible } = useScrollReveal({ threshold: 0.1 });
 
   const handleSlideChange = useCallback((swiper) => {
@@ -72,16 +104,56 @@ export default function MemoryCarousel() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedMemory, focusedPhoto]);
 
-  // Lock body scroll when modal or focused photo is open
+  useBodyScrollLock(selectedMemory !== null || focusedPhoto !== null);
+
   useEffect(() => {
-    const isOpen = selectedMemory !== null || focusedPhoto !== null;
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [selectedMemory, focusedPhoto]);
+    if (selectedMemory === null) return undefined;
+    document.body.classList.add('memory-overlay-open');
+    return () => document.body.classList.remove('memory-overlay-open');
+  }, [selectedMemory]);
+
+  useEffect(() => {
+    if (!focusedPhoto) return undefined;
+    document.body.classList.add('photo-overlay-open');
+    return () => document.body.classList.remove('photo-overlay-open');
+  }, [focusedPhoto]);
+
+  useEffect(() => {
+    const viewer = focusedOverlayRef.current;
+    if (!focusedPhoto || !viewer) return undefined;
+
+    const listenerOptions = { passive: false, capture: true };
+    let lastSingleTouchEnd = 0;
+
+    const preventZoomGesture = (event) => event.preventDefault();
+    const preventMultiTouch = (event) => {
+      if (event.touches?.length > 1) event.preventDefault();
+    };
+    const preventDoubleTap = (event) => {
+      if (event.changedTouches?.length !== 1) return;
+      const now = Date.now();
+      if (lastSingleTouchEnd && now - lastSingleTouchEnd < 350) {
+        event.preventDefault();
+      }
+      lastSingleTouchEnd = now;
+    };
+
+    viewer.addEventListener('gesturestart', preventZoomGesture, listenerOptions);
+    viewer.addEventListener('gesturechange', preventZoomGesture, listenerOptions);
+    viewer.addEventListener('gestureend', preventZoomGesture, listenerOptions);
+    viewer.addEventListener('touchmove', preventMultiTouch, listenerOptions);
+    viewer.addEventListener('touchend', preventDoubleTap, listenerOptions);
+    viewer.addEventListener('dblclick', preventZoomGesture, listenerOptions);
+
+    return () => {
+      viewer.removeEventListener('gesturestart', preventZoomGesture, listenerOptions);
+      viewer.removeEventListener('gesturechange', preventZoomGesture, listenerOptions);
+      viewer.removeEventListener('gestureend', preventZoomGesture, listenerOptions);
+      viewer.removeEventListener('touchmove', preventMultiTouch, listenerOptions);
+      viewer.removeEventListener('touchend', preventDoubleTap, listenerOptions);
+      viewer.removeEventListener('dblclick', preventZoomGesture, listenerOptions);
+    };
+  }, [focusedPhoto]);
 
   const handleMemoryClick = useCallback((idx) => {
     if (idx === activeIdx) {
@@ -91,7 +163,17 @@ export default function MemoryCarousel() {
     }
   }, [activeIdx]);
 
-  const memory = monthlyMemories[activeIdx];
+  const memory = memories[activeIdx];
+
+  if (!memory) {
+    return (
+      <section className="memory-carousel memory-carousel--visible" id="recuerdos">
+        <div className="memory-carousel__info">
+          <p className="memory-carousel__description">Aún no hay recuerdos para mostrar.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -124,14 +206,15 @@ export default function MemoryCarousel() {
         modules={[EffectCoverflow, Pagination]}
         onSlideChange={handleSlideChange}
         className="memory-carousel__swiper"
-        loop={monthlyMemories.length > 2}
+        loop={memories.length > 2}
       >
-        {monthlyMemories.map((mem, idx) => (
+        {memories.map((mem, idx) => (
           <SwiperSlide key={idx} className="memory-carousel__slide">
             <div 
               className={`memory-carousel__card ${idx === activeIdx ? 'memory-carousel__card--interactive' : ''}`}
               onClick={() => handleMemoryClick(idx)}
               role={idx === activeIdx ? "button" : "presentation"}
+              aria-label={idx === activeIdx ? `Abrir ${mem.title}` : undefined}
               tabIndex={idx === activeIdx ? 0 : -1}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -140,7 +223,7 @@ export default function MemoryCarousel() {
                 }
               }}
             >
-              {imgErrors[idx] ? (
+              {imgErrors[idx] || !mem.cover ? (
                 <MemoryPlaceholder title={mem.title} index={idx} dateOrLocation={mem.range} isCover />
               ) : (
                 <img
@@ -170,14 +253,20 @@ export default function MemoryCarousel() {
           <p className="memory-carousel__date">{memory.range}</p>
         )}
         <p className="memory-carousel__description">{memory.description}</p>
-        <p className="memory-carousel__dots-count" aria-label={`Mes ${activeIdx + 1} de ${monthlyMemories.length}`}>
-          {activeIdx + 1} / {monthlyMemories.length}
+        <p className="memory-carousel__dots-count" aria-label={`Mes ${activeIdx + 1} de ${memories.length}`}>
+          {activeIdx + 1} / {memories.length}
         </p>
       </div>
 
       {/* Modal Overlay para Recuerdos */}
       {selectedMemory !== null && (
-        <div className="memory-carousel__modal" onClick={() => setSelectedMemory(null)}>
+        <div
+          className="memory-carousel__modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Recuerdo: ${memories[selectedMemory].title}`}
+          onClick={() => setSelectedMemory(null)}
+        >
           <div className="memory-carousel__modal-content" onClick={e => e.stopPropagation()}>
             <button 
               className="memory-carousel__modal-close"
@@ -190,45 +279,47 @@ export default function MemoryCarousel() {
             </button>
             
             <div className="memory-carousel__modal-img-container">
-              {imgErrors[selectedMemory] ? (
+              {imgErrors[selectedMemory] || !memories[selectedMemory].cover ? (
                 <MemoryPlaceholder 
-                  title={monthlyMemories[selectedMemory].title} 
+                  title={memories[selectedMemory].title}
                   index={selectedMemory} 
-                  dateOrLocation={monthlyMemories[selectedMemory].range} 
+                  dateOrLocation={memories[selectedMemory].range}
                   isCover
                 />
               ) : (
                 <img 
-                  src={monthlyMemories[selectedMemory].cover} 
-                  alt={monthlyMemories[selectedMemory].title} 
-                  className="memory-carousel__modal-img memory-carousel__modal-img--cover" 
+                  src={memories[selectedMemory].cover}
+                  alt={memories[selectedMemory].title}
+                  className="memory-carousel__modal-img memory-carousel__modal-img--cover"
                   decoding="async"
                 />
               )}
             </div>
 
             <div className="memory-carousel__modal-text">
-              <h4 className="memory-carousel__modal-title">{monthlyMemories[selectedMemory].title}</h4>
-              {monthlyMemories[selectedMemory].range && (
-                <p className="memory-carousel__modal-date">{monthlyMemories[selectedMemory].range}</p>
+              <h4 className="memory-carousel__modal-title">{memories[selectedMemory].title}</h4>
+              {memories[selectedMemory].range && (
+                <p className="memory-carousel__modal-date">{memories[selectedMemory].range}</p>
               )}
-              <p className="memory-carousel__modal-desc">{monthlyMemories[selectedMemory].description}</p>
+              <p className="memory-carousel__modal-desc">{memories[selectedMemory].description}</p>
               
               <div className="memory-carousel__grid">
                 <p className="memory-carousel__grid-title">Pequeños pedazos de este mes</p>
                 <div className="memory-carousel__grid-container">
-                  {monthlyMemories[selectedMemory].photos.map((photo, i) => (
+                  {(Array.isArray(memories[selectedMemory].photos) ? memories[selectedMemory].photos : [])
+                    .filter(photo => typeof photo === 'string' && photo.length > 0)
+                    .map((photo, i) => (
                     <GridImage 
                       key={i} 
                       src={photo.replace(/\/([^/]+\.jpg)$/, '/thumb/$1')} 
                       alt={`Momento ${i + 1}`} 
                       onClick={() => setFocusedPhoto(photo)} 
                     />
-                  ))}
+                    ))}
                 </div>
               </div>
 
-              {monthlyMemories[selectedMemory].secret && (
+              {memories[selectedMemory].secret && (
                 <div className="memory-carousel__modal-secret-box">
                   {!secretRevealed ? (
                     <button 
@@ -239,7 +330,7 @@ export default function MemoryCarousel() {
                     </button>
                   ) : (
                     <p className="memory-carousel__modal-secret">
-                      {monthlyMemories[selectedMemory].secret}
+                      {memories[selectedMemory].secret}
                     </p>
                   )}
                 </div>
@@ -251,13 +342,15 @@ export default function MemoryCarousel() {
 
       {/* Focused Photo Overlay */}
       {focusedPhoto && (
-        <div className="memory-carousel__focused" onClick={() => setFocusedPhoto(null)}>
-          <div className="memory-carousel__focused-content" onClick={e => e.stopPropagation()}>
-            <img src={focusedPhoto} alt="Enfocado" className="memory-carousel__focused-img" decoding="async" />
-            <button className="memory-carousel__focused-btn" onClick={() => setFocusedPhoto(null)}>
-              Volver al mes
-            </button>
-          </div>
+        <div
+          ref={focusedOverlayRef}
+          className="memory-carousel__focused"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Foto ampliada"
+          onClick={() => setFocusedPhoto(null)}
+        >
+          <FocusedPhoto src={focusedPhoto} onClose={() => setFocusedPhoto(null)} />
         </div>
       )}
     </section>

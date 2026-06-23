@@ -274,6 +274,7 @@
   max-width: 450px;
   width: 100%;
   max-height: 90vh;
+  max-height: calc(100dvh - 2rem);
   overflow-y: auto;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
   animation: modalSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -434,6 +435,20 @@
   background-color: rgba(0, 0, 0, 0.2);
 }
 
+.memory-carousel__grid-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.memory-carousel__grid-button:focus-visible {
+  outline: 2px solid rgba(212, 175, 55, 0.75);
+  outline-offset: 2px;
+}
+
 .memory-carousel__grid-img:hover {
   transform: scale(1.05);
   filter: brightness(1.1);
@@ -451,7 +466,12 @@
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  animation: fadeIn 0.3s ease;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  touch-action: none;
 }
 
 .memory-carousel__focused-content {
@@ -459,16 +479,35 @@
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  width: 100%;
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
+  justify-content: center;
 }
 
 .memory-carousel__focused-img {
-  max-width: 100%;
-  max-height: 75vh;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 1200px);
+  max-height: calc(100vh - 7rem);
+  max-height: calc(100dvh - 7rem);
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  filter: none;
+  transform: none;
+  will-change: auto;
+}
+
+.memory-carousel__focused-status {
+  max-width: 18rem;
+  margin: 0;
+  color: rgba(245, 237, 224, 0.85);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  text-align: center;
 }
 
 .memory-carousel__focused-btn {
@@ -486,4 +525,28 @@
 
 .memory-carousel__focused-btn:hover {
   background: rgba(212, 175, 55, 0.3);
+}
+
+body.photo-overlay-open .memory-carousel__modal {
+  visibility: hidden;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.memory-overlay-open .memory-carousel {
+  transform: none;
+  transition: none;
+}
+
+@media (max-width: 767px) {
+  .memory-carousel__modal {
+    background: rgba(10, 5, 5, 0.96);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .memory-carousel__modal-content,
+  .memory-carousel__focused {
+    animation: none;
+  }
 }
