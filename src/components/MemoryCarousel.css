@@ -64,6 +64,13 @@
   user-select: none;
 }
 
+.memory-carousel__swiper-guard {
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 .memory-carousel__slide {
   width: 260px !important;
   height: 360px !important;
@@ -114,7 +121,9 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  -webkit-user-select: none;
   user-select: none;
+  -webkit-touch-callout: none;
   -webkit-user-drag: none;
   pointer-events: none; /* Card itself handles touch, not the img */
 }
@@ -318,12 +327,20 @@
   border-top-right-radius: 12px;
   overflow: hidden;
   position: relative;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .memory-carousel__modal-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .memory-carousel__modal-text {
@@ -433,6 +450,10 @@
   cursor: pointer;
   transition: transform 0.3s ease, filter 0.3s ease;
   background-color: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .memory-carousel__grid-button {
@@ -442,6 +463,10 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .memory-carousel__grid-button:focus-visible {
@@ -472,6 +497,9 @@
   overflow: hidden;
   overscroll-behavior: contain;
   touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .memory-carousel__focused-content {
@@ -499,6 +527,10 @@
   filter: none;
   transform: none;
   will-change: auto;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .memory-carousel__focused-status {

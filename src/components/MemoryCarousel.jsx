@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -6,6 +6,7 @@ import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
+import { useIOSZoomGuard } from '../hooks/useIOSZoomGuard';
 import './MemoryCarousel.css';
 
 import { monthlyMemories } from '../constants/content';
@@ -28,17 +29,25 @@ function MemoryPlaceholder({ title, index, dateOrLocation, isCover = false }) {
 
 function GridImage({ src, alt, onClick }) {
   const [hasError, setHasError] = useState(false);
+  const zoomGuardRef = useIOSZoomGuard();
   
   if (hasError) return null; // Oculta elegantemente si falla
 
   return (
-    <button className="memory-carousel__grid-button" onClick={onClick} aria-label={`Abrir ${alt}`}>
+    <button
+      ref={zoomGuardRef}
+      className="memory-carousel__grid-button"
+      onClick={onClick}
+      aria-label={`Abrir ${alt}`}
+    >
       <img
         src={src}
         alt={alt}
         className="memory-carousel__grid-img"
         loading="lazy"
         decoding="async"
+        draggable="false"
+        onDragStart={event => event.preventDefault()}
         onError={() => setHasError(true)}
       />
     </button>
@@ -63,6 +72,8 @@ function FocusedPhoto({ src, onClose }) {
           alt="Recuerdo ampliado"
           className="memory-carousel__focused-img"
           decoding="async"
+          draggable="false"
+          onDragStart={event => event.preventDefault()}
           onLoad={() => setStatus('loaded')}
           onError={() => setStatus('error')}
         />
@@ -80,7 +91,9 @@ export default function MemoryCarousel({ memories = monthlyMemories }) {
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [secretRevealed, setSecretRevealed] = useState(false);
   const [focusedPhoto, setFocusedPhoto] = useState(null);
-  const focusedOverlayRef = useRef(null);
+  const carouselZoomGuardRef = useIOSZoomGuard();
+  const modalImageZoomGuardRef = useIOSZoomGuard(selectedMemory !== null);
+  const focusedOverlayRef = useIOSZoomGuard(Boolean(focusedPhoto));
   const { ref, isVisible } = useScrollReveal({ threshold: 0.1 });
 
   const handleSlideChange = useCallback((swiper) => {
@@ -118,43 +131,6 @@ export default function MemoryCarousel({ memories = monthlyMemories }) {
     return () => document.body.classList.remove('photo-overlay-open');
   }, [focusedPhoto]);
 
-  useEffect(() => {
-    const viewer = focusedOverlayRef.current;
-    if (!focusedPhoto || !viewer) return undefined;
-
-    const listenerOptions = { passive: false, capture: true };
-    let lastSingleTouchEnd = 0;
-
-    const preventZoomGesture = (event) => event.preventDefault();
-    const preventMultiTouch = (event) => {
-      if (event.touches?.length > 1) event.preventDefault();
-    };
-    const preventDoubleTap = (event) => {
-      if (event.changedTouches?.length !== 1) return;
-      const now = Date.now();
-      if (lastSingleTouchEnd && now - lastSingleTouchEnd < 350) {
-        event.preventDefault();
-      }
-      lastSingleTouchEnd = now;
-    };
-
-    viewer.addEventListener('gesturestart', preventZoomGesture, listenerOptions);
-    viewer.addEventListener('gesturechange', preventZoomGesture, listenerOptions);
-    viewer.addEventListener('gestureend', preventZoomGesture, listenerOptions);
-    viewer.addEventListener('touchmove', preventMultiTouch, listenerOptions);
-    viewer.addEventListener('touchend', preventDoubleTap, listenerOptions);
-    viewer.addEventListener('dblclick', preventZoomGesture, listenerOptions);
-
-    return () => {
-      viewer.removeEventListener('gesturestart', preventZoomGesture, listenerOptions);
-      viewer.removeEventListener('gesturechange', preventZoomGesture, listenerOptions);
-      viewer.removeEventListener('gestureend', preventZoomGesture, listenerOptions);
-      viewer.removeEventListener('touchmove', preventMultiTouch, listenerOptions);
-      viewer.removeEventListener('touchend', preventDoubleTap, listenerOptions);
-      viewer.removeEventListener('dblclick', preventZoomGesture, listenerOptions);
-    };
-  }, [focusedPhoto]);
-
   const handleMemoryClick = useCallback((idx) => {
     if (idx === activeIdx) {
       setSelectedMemory(idx);
@@ -190,26 +166,27 @@ export default function MemoryCarousel({ memories = monthlyMemories }) {
         </div>
       </div>
 
-      <Swiper
-        effect="coverflow"
-        grabCursor
-        centeredSlides
-        slidesPerView="auto"
-        coverflowEffect={{
-          rotate: 28,
-          stretch: 0,
-          depth: 180,
-          modifier: 1,
-          slideShadows: true,
-        }}
-        pagination={{ clickable: true }}
-        modules={[EffectCoverflow, Pagination]}
-        onSlideChange={handleSlideChange}
-        className="memory-carousel__swiper"
-        loop={memories.length > 2}
-      >
-        {memories.map((mem, idx) => (
-          <SwiperSlide key={idx} className="memory-carousel__slide">
+      <div ref={carouselZoomGuardRef} className="memory-carousel__swiper-guard">
+        <Swiper
+          effect="coverflow"
+          grabCursor
+          centeredSlides
+          slidesPerView="auto"
+          coverflowEffect={{
+            rotate: 28,
+            stretch: 0,
+            depth: 180,
+            modifier: 1,
+            slideShadows: true,
+          }}
+          pagination={{ clickable: true }}
+          modules={[EffectCoverflow, Pagination]}
+          onSlideChange={handleSlideChange}
+          className="memory-carousel__swiper"
+          loop={memories.length > 2}
+        >
+          {memories.map((mem, idx) => (
+            <SwiperSlide key={idx} className="memory-carousel__slide">
             <div 
               className={`memory-carousel__card ${idx === activeIdx ? 'memory-carousel__card--interactive' : ''}`}
               onClick={() => handleMemoryClick(idx)}
@@ -234,6 +211,8 @@ export default function MemoryCarousel({ memories = monthlyMemories }) {
                   loading={idx === activeIdx ? 'eager' : 'lazy'}
                   fetchPriority={idx === activeIdx ? 'high' : 'auto'}
                   decoding="async"
+                  draggable="false"
+                  onDragStart={event => event.preventDefault()}
                 />
               )}
               <div className="memory-carousel__card-overlay" aria-hidden="true" />
@@ -243,9 +222,10 @@ export default function MemoryCarousel({ memories = monthlyMemories }) {
                 </div>
               )}
             </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
       <div className="memory-carousel__info">
         <h3 className="memory-carousel__title">{memory.title}</h3>
@@ -278,7 +258,7 @@ export default function MemoryCarousel({ memories = monthlyMemories }) {
               </svg>
             </button>
             
-            <div className="memory-carousel__modal-img-container">
+            <div ref={modalImageZoomGuardRef} className="memory-carousel__modal-img-container">
               {imgErrors[selectedMemory] || !memories[selectedMemory].cover ? (
                 <MemoryPlaceholder 
                   title={memories[selectedMemory].title}
@@ -292,6 +272,8 @@ export default function MemoryCarousel({ memories = monthlyMemories }) {
                   alt={memories[selectedMemory].title}
                   className="memory-carousel__modal-img memory-carousel__modal-img--cover"
                   decoding="async"
+                  draggable="false"
+                  onDragStart={event => event.preventDefault()}
                 />
               )}
             </div>
