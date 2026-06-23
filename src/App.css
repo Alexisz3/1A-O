@@ -43,10 +43,21 @@
 .app__bg-layer--previous {
   opacity: 1;
   transform: scale(1.02);
-  z-index: 0;
+  z-index: 2;
+  animation: atmosphereDissolve 1.25s ease-in-out forwards;
 }
 
-/* bgFadeIn removed — crossfade handled entirely by CSS transitions on --active / --previous */
+@keyframes atmosphereDissolve {
+  0% { opacity: 1; }
+  35% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app__bg-layer--previous {
+    animation-duration: 0.01ms;
+  }
+}
 
 .app__bg-overlay {
   position: absolute;
